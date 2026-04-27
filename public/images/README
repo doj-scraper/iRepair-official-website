@@ -1,0 +1,12 @@
+Houston images
+
+Files in this directory (houston-1.jpg, houston-2.jpg, etc.) were added for homepage marketing. Sources/credits:
+
+- Attempted to fetch Unsplash images (free-to-use); if present, image filenames include original source in commit message or PR notes.
+- If downloads were not possible due to network restrictions, placeholder SVGs were created (baby-blue skyline silhouettes).
+
+Licensing:
+- Unsplash images are free to use under the Unsplash license; verify each photo's license on unsplash.com if you plan commercial redistribution.
+- Placeholder SVGs are original assets created for this repo and are public domain for project use.
+
+Alt text: All Houston images include alt text "Houston skyline" and are marked loading="lazy" for performance.

@@ -1,0 +1,25 @@
+<!-- Placeholder Houston skyline (created due to failed image fetch) -->
+<!-- Colors: baby-blue tokens; free to use within this project -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600" role="img" aria-label="Houston skyline">
+  <defs>
+    <linearGradient id="g" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0%" stop-color="#e6f9ff" />
+      <stop offset="100%" stop-color="#d7f3ff" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="600" fill="url(#g)" />
+  <!-- simple skyline silhouette -->
+  <g fill="#7fd3f6" transform="translate(0,120)">
+    <rect x="40" y="220" width="60" height="80" rx="6" />
+    <rect x="120" y="180" width="90" height="120" rx="6" />
+    <rect x="230" y="160" width="60" height="140" rx="6" />
+    <rect x="310" y="140" width="120" height="160" rx="6" />
+    <rect x="450" y="100" width="80" height="200" rx="6" />
+    <rect x="560" y="80" width="140" height="220" rx="6" />
+    <rect x="720" y="130" width="90" height="170" rx="6" />
+    <rect x="830" y="170" width="60" height="130" rx="6" />
+    <rect x="910" y="200" width="70" height="100" rx="6" />
+    <rect x="1000" y="220" width="80" height="80" rx="6" />
+  </g>
+  <text x="36" y="48" font-family="Inter, Arial, sans-serif" font-size="28" fill="#0369a1">Houston skyline</text>
+</svg>

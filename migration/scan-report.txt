@@ -1,0 +1,64 @@
+# iRepair Connect Next.js Migration Scan Report
+Generated: 2026-04-26
+
+## 1. Supabase Imports Scan
+Files with '@supabase/supabase-js' references:
+
+- src/integrations/supabase/client.ts:2 - Comment about avoiding static import (OK)
+- src/integrations/supabase/client.ts:34 - Dynamic import of createClient (OK - server-safe)
+- src/context/AuthContext.tsx:2 - Type-only import from supabase-js (OK - types don't bundle)
+- src/lib/supabaseServer.ts:1 - Static import (OK - server-only file)
+
+Status: No static supabase-js imports in client files that would break SSR.
+
+## 2. React-Router Imports Scan
+Files with react-router imports: NONE FOUND
+
+Status: Project appears to not use react-router-dom currently. May already be using Next.js Link or other routing.
+
+## 3. Link Component Usage Scan
+Mixed Link usage found - needs migration to Next.js Link:
+
+### Using Next.js <Link href=...> (OK):
+- src/components/NavLink.tsx:20
+- src/pages/NotFound.tsx:17
+- src/pages/Index.tsx:72, 131, 138
+- src/pages/Login.tsx:141
+- src/pages/Dashboard.tsx:154, 184
+
+### Using react-router <Link to=...> (NEEDS FIX):
+- src/components/cart/CartDrawer.tsx:77
+- src/components/layout/Footer.tsx:23, 24, 25, 26
+- src/components/layout/Header.tsx:39, 85
+- src/pages/Index.tsx:78, 166
+
+## 4. Browser-Only API Usage Scan
+Files with potential SSR issues:
+
+### window usage:
+- src/components/cart/CartDrawer.tsx:47 - window.location.href (client-side navigation)
+- src/components/hooks/use-mobile.tsx:9, 11, 14 - window.matchMedia, window.innerWidth
+- src/pages/Catalog.tsx:18, 19, 26, 32, 35, 36 - window.history, window.location
+- src/pages/Login.tsx:24, 41 - window.history, window.location
+- src/pages/ProductDetail.tsx:118 - window.history
+- src/components/ui/sidebar.tsx:68, 87, 88 - document.cookie, window events
+
+### document usage:
+- src/styles/palette.ts:26 - document.documentElement
+- src/main.tsx:5 - document.getElementById (entry point - OK)
+- src/test/accessibility.nav.test.tsx:51 - test file (OK)
+
+### localStorage usage:
+- src/integrations/supabase/client.ts:39 - guarded with typeof check (OK)
+
+## Summary
+- Supabase imports: SAFE (already using dynamic imports)
+- React-router: NOT FOUND (may already be migrated)
+- Link components: 9 files need Link to->href migration
+- Browser APIs: 6+ files need SSR guards or dynamic imports
+
+## Next Steps
+1. Replace <Link to=...> with <Link href=...> in 4 files
+2. Add SSR guards (typeof window !== 'undefined') or useEffect wrappers
+3. Convert components with heavy window usage to client-only components
+4. Verify Next.js build passes
