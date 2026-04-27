@@ -1,12 +1,11 @@
-Houston images
+iRepair image assets
 
-Files in this directory (houston-1.jpg, houston-2.jpg, etc.) were added for homepage marketing. Sources/credits:
+This directory holds the renamed marketing and product images used by the app:
 
-- Attempted to fetch Unsplash images (free-to-use); if present, image filenames include original source in commit message or PR notes.
-- If downloads were not possible due to network restrictions, placeholder SVGs were created (baby-blue skyline silhouettes).
+- `home-hero-ballpark.jpg` - homepage hero image on `/`
+- `about-truck-dusk.jpg` - about page image
+- `catalog-bench.jpg` - catalog promo image
+- `catalog-bench-alt.jpg` - spare bench variant
+- `product-exploded-phone.jpg` - product/detail illustration
 
-Licensing:
-- Unsplash images are free to use under the Unsplash license; verify each photo's license on unsplash.com if you plan commercial redistribution.
-- Placeholder SVGs are original assets created for this repo and are public domain for project use.
-
-Alt text: All Houston images include alt text "Houston skyline" and are marked loading="lazy" for performance.
+The logo lockup lives in `public/brand/irepair-technologies-lockup.jpg`.

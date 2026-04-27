@@ -4,20 +4,23 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { MainLayout } from '@/components/layout/MainLayout';
+import { AnnouncementMarquee } from '@/components/AnnouncementMarquee';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { ArrowRight, Truck, ShieldCheck, PackageCheck, Smartphone, Battery, Camera, Search } from 'lucide-react';
-
-const FEATURES = [
-  { icon: Truck, title: 'Same-day Houston dispatch', desc: 'Local stock, no overseas wait.' },
-  { icon: ShieldCheck, title: 'QC tested', desc: 'Every part inspected before shipping.' },
-  { icon: PackageCheck, title: 'Bulk pricing', desc: 'Volume discounts that scale with your shop.' },
-];
+import { ArrowRight, Smartphone, Battery, Camera, Search } from 'lucide-react';
 
 const CATEGORIES = [
   { icon: Smartphone, label: 'Screens', count: 6 },
   { icon: Battery, label: 'Batteries', count: 4 },
   { icon: Camera, label: 'Cameras', count: 3 },
+];
+
+const ANNOUNCEMENTS = [
+  { label: 'Same-day dispatch', detail: 'Houston orders packed fast', href: '/catalog' },
+  { label: 'Wholesale only', detail: 'Built for repair shops' },
+  { label: 'QC tested', detail: 'Parts checked before shipping' },
+  { label: 'Bulk pricing', detail: 'Better margins at scale' },
+  { label: 'Need a source?', detail: 'We can help track it down' },
 ];
 
 export default function HomePage() {
@@ -45,7 +48,7 @@ export default function HomePage() {
           }}
           aria-hidden="true"
         />
-        <div className="container relative grid gap-10 py-16 md:grid-cols-2 md:py-24 lg:py-32">
+        <div className="container relative grid gap-10 py-16 md:grid-cols-[minmax(0,1.08fr)_minmax(320px,0.92fr)] md:items-center md:py-24 lg:py-32">
           <div className="flex flex-col justify-center text-primary-foreground">
             <span className="mb-4 inline-flex w-fit items-center gap-2 rounded-full border border-primary-foreground/30 bg-primary-foreground/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider backdrop-blur">
               Houston, TX · Wholesale Only
@@ -93,36 +96,41 @@ export default function HomePage() {
           <div className="relative hidden md:block">
             <div className="absolute right-0 top-1/2 h-80 w-80 -translate-y-1/2 rounded-3xl border border-primary-foreground/20 bg-primary-foreground/5 p-1 backdrop-blur-md shadow-elegant overflow-hidden">
               <img
-                alt="Houston skyline"
+                alt="Houston skyline and ballpark at dusk"
                 loading="lazy"
-                src="/images/houston-2.jpg"
-                srcSet="/images/houston-2.jpg 1200w, /images/houston-2-800.jpg 800w"
+                src="/images/home-hero-ballpark.jpg"
                 className="h-full w-full rounded-3xl object-cover"
               />
+              <div className="absolute bottom-4 left-4 max-w-[15rem] rounded-2xl border border-primary-foreground/20 bg-background/88 px-4 py-3 text-left backdrop-blur">
+                <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-primary">
+                  Houston local
+                </p>
+                <p className="mt-1 text-sm text-foreground">
+                  Real parts, real shop floors, and a city that knows the repair trade.
+                </p>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Features */}
-      <section className="border-b border-border bg-secondary/30">
-        <div className="container grid gap-6 py-12 md:grid-cols-3">
-          {FEATURES.map(({ icon: Icon, title, desc }) => (
-            <div key={title} className="flex items-start gap-4">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-accent text-primary">
-                <Icon className="h-6 w-6" />
-              </div>
-              <div>
-                <h3 className="font-display text-base font-semibold text-foreground">{title}</h3>
-                <p className="text-sm text-muted-foreground">{desc}</p>
-              </div>
-            </div>
-          ))}
+      {/* Bulletin */}
+      <section className="container py-8 md:py-10">
+        <div className="mb-4 flex items-center gap-3">
+          <span className="h-2.5 w-2.5 bg-primary shadow-sm" aria-hidden="true" />
+          <p className="text-xs font-bold uppercase tracking-[0.24em] text-primary">
+            Bulletin board
+          </p>
+          <p className="text-sm text-muted-foreground">
+            Announcements, promos, and shop-floor notes.
+          </p>
         </div>
+
+        <AnnouncementMarquee items={ANNOUNCEMENTS} durationSeconds={32} />
       </section>
 
       {/* Categories */}
-      <section className="container py-16">
+      <section className="container py-14 md:py-16">
         <div className="mb-10 flex items-end justify-between">
           <div>
             <p className="text-xs font-bold uppercase tracking-wider text-primary">Catalog</p>

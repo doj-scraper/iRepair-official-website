@@ -5,9 +5,10 @@ import { PrismaPg } from '@prisma/adapter-pg';
 import pg from 'pg';
 import { generateSku } from './skuGenerator';
 
-const connectionString = process.env.DATABASE_URL_DIRECT || process.env.DATABASE_URL;
+const connectionString =
+  process.env.DATABASE_URL_DIRECT || process.env.DIRECT_URL || process.env.DATABASE_URL;
 if (!connectionString) {
-  throw new Error('DATABASE_URL or DATABASE_URL_DIRECT is required');
+  throw new Error('DATABASE_URL, DATABASE_URL_DIRECT, or DIRECT_URL is required');
 }
 
 const pool = new pg.Pool({ connectionString });

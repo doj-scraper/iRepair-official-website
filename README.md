@@ -177,7 +177,9 @@ When you change auth, checkout, admin access, or route behavior, add a regressio
    NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
    SUPABASE_URL=https://your-project.supabase.co
    SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
-   DATABASE_URL=postgresql://user:password@host:port/dbname
+   DATABASE_URL="postgresql://user:password@aws-1-us-west-2.pooler.supabase.com:6543/postgres?pgbouncer=true"
+   DATABASE_URL_DIRECT="postgresql://user:password@aws-1-us-west-2.pooler.supabase.com:5432/postgres"
+   DIRECT_URL="postgresql://user:password@aws-1-us-west-2.pooler.supabase.com:5432/postgres"
    STRIPE_SECRET_KEY=sk_test_...
    ```
 

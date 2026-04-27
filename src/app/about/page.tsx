@@ -37,6 +37,16 @@ export default function AboutPage() {
         </div>
       </section>
 
+      <section className="container pb-16">
+        <div className="overflow-hidden rounded-3xl border border-border bg-card shadow-card">
+          <img
+            src="/images/about-truck-dusk.jpg"
+            alt="iRepair crates and a freight truck at dusk in Houston"
+            className="h-[18rem] w-full object-cover md:h-[26rem]"
+          />
+        </div>
+      </section>
+
       <section className="container grid gap-10 pb-16 md:grid-cols-2">
         <div>
           <h2 className="font-display text-3xl font-bold tracking-tight">Our story</h2>

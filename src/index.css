@@ -259,6 +259,15 @@
 /* ─────────────────────────────────────────────
    UTILITY CLASSES
    ───────────────────────────────────────────── */
+@keyframes marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
 @layer utilities {
   .gradient-hero     { background: var(--gradient-hero); }
   .gradient-primary  { background: var(--gradient-primary); }
@@ -267,6 +276,16 @@
   .shadow-soft       { box-shadow: var(--shadow-soft); }
   .shadow-card       { box-shadow: var(--shadow-card); }
   .transition-smooth { transition: var(--transition-smooth); }
+
+  .animate-marquee {
+    animation: marquee-scroll var(--marquee-duration, 28s) linear infinite;
+    will-change: transform;
+  }
+
+  .animate-marquee-reverse {
+    animation: marquee-scroll var(--marquee-duration, 28s) linear infinite reverse;
+    will-change: transform;
+  }
 
   /* Hairline utilities — tiny pale-yellow accent lines */
   .border-hairline  { border-color: hsl(var(--hairline)); }

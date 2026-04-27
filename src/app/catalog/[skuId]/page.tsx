@@ -307,6 +307,31 @@ export default function ProductDetailPage() {
             </div>
           </div>
         </div>
+
+        <section className="mt-8 overflow-hidden rounded-3xl border border-border bg-card shadow-card">
+          <div className="grid gap-0 md:grid-cols-[1fr_0.95fr]">
+            <div className="flex flex-col justify-center p-6 md:p-8">
+              <p className="text-xs font-bold uppercase tracking-[0.24em] text-primary">
+                Inside the part
+              </p>
+              <h2 className="mt-2 font-display text-2xl font-bold tracking-tight">
+                The detail image shows the layers customers are actually paying for.
+              </h2>
+              <p className="mt-3 max-w-xl text-sm text-muted-foreground">
+                Use this as a visual check when you’re comparing assemblies, screens, batteries,
+                and board-level components. It belongs on the product page where buyers are already
+                making a technical decision.
+              </p>
+            </div>
+            <div className="relative min-h-[18rem] bg-secondary/30">
+              <img
+                src="/images/product-exploded-phone.jpg"
+                alt="Exploded phone assembly showing layers of internal components"
+                className="h-full w-full object-cover"
+              />
+            </div>
+          </div>
+        </section>
       </div>
     </MainLayout>
   );
