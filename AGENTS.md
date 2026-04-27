@@ -85,6 +85,7 @@ iRepair Connect is a wholesale phone-parts storefront. The live application is a
 - `SUPABASE_PUBLISHABLE_KEY`
 - `SUPABASE_SERVICE_ROLE_KEY`
 - `DATABASE_URL`
+- `DATABASE_URL_DIRECT`
 - `STRIPE_SECRET_KEY`
 
 ## Scripts worth knowing
@@ -96,6 +97,7 @@ iRepair Connect is a wholesale phone-parts storefront. The live application is a
 - `npm run test`
 - `npm run test:e2e`
 - `npm run prisma:generate`
+- `npm run prisma:migrate:deploy`
 - `npm run prisma:db:seed`
 
 ## Verification expectations

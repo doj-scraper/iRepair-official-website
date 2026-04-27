@@ -9,4 +9,8 @@ Licensing:
 - Unsplash images are free to use under the Unsplash license; verify each photo's license on unsplash.com if you plan commercial redistribution.
 - Placeholder SVGs are original assets created for this repo and are public domain for project use.
 
+Inventory image note:
+- The seeded Supabase inventory rows use `/product.png` as a shared product image.
+- The app still falls back to `/F8B48E10-46F9-4474-A98F-191D370F222D.png` when an inventory row has no `image_url`.
+
 Alt text: All Houston images include alt text "Houston skyline" and are marked loading="lazy" for performance.

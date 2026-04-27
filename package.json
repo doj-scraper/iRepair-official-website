@@ -3,6 +3,9 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "prisma": {
+    "seed": "node --experimental-strip-types prisma/seed.ts"
+  },
   "scripts": {
     "dev": "next dev -p 3000",
     "dev:next": "next dev -p 3000",
@@ -17,6 +20,7 @@
     "test:e2e": "playwright test",
     "test:all": "npm run test:unit && npm run test:e2e",
     "prisma:generate": "prisma generate",
+    "prisma:migrate:deploy": "prisma migrate deploy",
     "prisma:db:seed": "prisma db seed"
   },
   "dependencies": {
@@ -64,6 +68,7 @@
     "lucide-react": "^0.462.0",
     "next": "^16.2.4",
     "next-themes": "^0.3.0",
+    "pg": "^8.20.0",
     "react": "^18.3.1",
     "react-day-picker": "^8.10.1",
     "react-dom": "^18.3.1",

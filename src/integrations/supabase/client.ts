@@ -10,11 +10,14 @@ const resolveEnv = () => {
 
   const SUPABASE_URL =
     nodeEnv?.NEXT_PUBLIC_SUPABASE_URL ??
+    nodeEnv?.VITE_SUPABASE_URL ??
     nodeEnv?.SUPABASE_URL ??
     (isBrowser ? (window as any).__NEXT_PUBLIC_SUPABASE_URL : undefined);
 
   const SUPABASE_PUBLISHABLE_KEY =
     nodeEnv?.NEXT_PUBLIC_SUPABASE_ANON_KEY ??
+    nodeEnv?.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ??
+    nodeEnv?.VITE_SUPABASE_PUBLISHABLE_KEY ??
     nodeEnv?.SUPABASE_PUBLISHABLE_KEY ??
     (isBrowser ? (window as any).__NEXT_PUBLIC_SUPABASE_ANON_KEY : undefined);
 

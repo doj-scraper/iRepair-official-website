@@ -180,7 +180,7 @@ model Product {
 
 model CartItem {
   id        String     @id @default(uuid())
-  userId    String
+  userId    String     @db.Uuid
   partId    String
   quantity  Int        @default(1)
   createdAt DateTime   @default(now())

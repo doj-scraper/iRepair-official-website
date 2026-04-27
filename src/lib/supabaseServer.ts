@@ -7,8 +7,15 @@ let _client: ReturnType<typeof createClient> | null = null;
 
 function getAdminClient() {
   if (_client) return _client;
-  const url = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL ?? '';
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY ?? process.env.SUPABASE_SERVICE_ROLE ?? '';
+  const url =
+    process.env.SUPABASE_URL ??
+    process.env.NEXT_PUBLIC_SUPABASE_URL ??
+    process.env.VITE_SUPABASE_URL ??
+    '';
+  const key =
+    process.env.SUPABASE_SERVICE_ROLE_KEY ??
+    process.env.SUPABASE_SERVICE_ROLE ??
+    '';
   if (!url) throw new Error('SUPABASE_URL env var is required');
   _client = createClient(url, key, {
     auth: { persistSession: false, autoRefreshToken: false },

@@ -1,423 +1,528 @@
-// prisma/seed.ts
 import 'dotenv/config';
 import { PrismaClient } from '@prisma/client';
-import { PrismaPg } from '@prisma/adapter-pg';
-import pg from 'pg';
-import { generateSku } from './skuGenerator';
+import { generateSku } from './skuGenerator.ts';
 
 const connectionString = process.env.DATABASE_URL_DIRECT || process.env.DATABASE_URL;
+
 if (!connectionString) {
   throw new Error('DATABASE_URL or DATABASE_URL_DIRECT is required');
 }
 
-const pool = new pg.Pool({ connectionString });
-const adapter = new PrismaPg(pool);
-const prisma = new PrismaClient({ adapter });
+process.env.DATABASE_URL = connectionString;
+const prisma = new PrismaClient();
 
-async function main() {
-  console.log('🌱 Seeding database...');
+const phoneData = [
+  { modelCode: 'IP', generation: '8', variantCode: 'ZZ', variantName: null },
+  { modelCode: 'IP', generation: '9', variantCode: 'ZZ', variantName: null },
+  { modelCode: 'IP', generation: '10', variantCode: 'ZZ', variantName: null },
+  { modelCode: 'IP', generation: '11', variantCode: 'ZZ', variantName: null },
+  { modelCode: 'IP', generation: '12', variantCode: 'ZZ', variantName: null },
+  { modelCode: 'IP', generation: '13', variantCode: 'ZZ', variantName: null },
+  { modelCode: 'IP', generation: '14', variantCode: 'ZZ', variantName: null },
+  { modelCode: 'IP', generation: '14', variantCode: 'PL', variantName: 'Plus' },
+  { modelCode: 'IP', generation: '14', variantCode: 'PR', variantName: 'Pro' },
+  { modelCode: 'IP', generation: '14', variantCode: 'PM', variantName: 'Pro Max' },
+  { modelCode: 'IP', generation: '15', variantCode: 'ZZ', variantName: null },
+  { modelCode: 'IP', generation: '15', variantCode: 'PL', variantName: 'Plus' },
+  { modelCode: 'IP', generation: '15', variantCode: 'PR', variantName: 'Pro' },
+  { modelCode: 'IP', generation: '15', variantCode: 'PM', variantName: 'Pro Max' },
+  { modelCode: 'IP', generation: '16', variantCode: 'ZZ', variantName: null },
+  { modelCode: 'IP', generation: '16', variantCode: 'PL', variantName: 'Plus' },
+  { modelCode: 'IP', generation: '16', variantCode: 'PR', variantName: 'Pro' },
+  { modelCode: 'IP', generation: '16', variantCode: 'PM', variantName: 'Pro Max' },
+  { modelCode: 'IP', generation: '17', variantCode: 'ZZ', variantName: null },
+  { modelCode: 'IP', generation: '17', variantCode: 'PL', variantName: 'Plus' },
+  { modelCode: 'IP', generation: '17', variantCode: 'PR', variantName: 'Pro' },
+  { modelCode: 'IP', generation: '17', variantCode: 'PM', variantName: 'Pro Max' },
+  { modelCode: 'GS', generation: '23', variantCode: 'ZZ', variantName: null },
+  { modelCode: 'GS', generation: '23', variantCode: 'PL', variantName: 'Plus' },
+  { modelCode: 'GS', generation: '23', variantCode: 'UL', variantName: 'Ultra' },
+  { modelCode: 'GS', generation: '23', variantCode: 'FE', variantName: 'FE' },
+  { modelCode: 'GS', generation: '24', variantCode: 'ZZ', variantName: null },
+  { modelCode: 'GS', generation: '24', variantCode: 'PL', variantName: 'Plus' },
+  { modelCode: 'GS', generation: '24', variantCode: 'UL', variantName: 'Ultra' },
+  { modelCode: 'GS', generation: '24', variantCode: 'FE', variantName: 'FE' },
+  { modelCode: 'GA', generation: '54', variantCode: 'ZZ', variantName: null },
+  { modelCode: 'GA', generation: '55', variantCode: 'ZZ', variantName: null },
+] as const;
 
-  try {
-    console.log('Clearing existing seed data...');
-    await prisma.stockLedger.deleteMany();
-    await prisma.partAlias.deleteMany();
-    await prisma.phoneCompatibility.deleteMany();
-    await prisma.partMaster.deleteMany();
-    await prisma.partQuality.deleteMany();
-    await prisma.partType.deleteMany();
-    await prisma.bucket.deleteMany();
-    await prisma.phone.deleteMany();
-    await prisma.model.deleteMany();
-    await prisma.brand.deleteMany();
-    console.log('✅ Existing seed data cleared');
+const partTypeData = [
+  { bucketName: 'Visual Interface', code: 'A', name: 'Screen' },
+  { bucketName: 'Visual Interface', code: 'B', name: 'Display' },
+  { bucketName: 'Visual Interface', code: 'C', name: 'Digitizer' },
+  { bucketName: 'Chassis & Enclosure', code: 'A', name: 'Back Glass' },
+  { bucketName: 'Chassis & Enclosure', code: 'B', name: 'Frame' },
+  { bucketName: 'Chassis & Enclosure', code: 'C', name: 'Housing' },
+  { bucketName: 'Functional Modules', code: 'A', name: 'Battery' },
+  { bucketName: 'Functional Modules', code: 'B', name: 'Camera' },
+  { bucketName: 'Interconnects', code: 'A', name: 'Charge Port' },
+  { bucketName: 'Interconnects', code: 'B', name: 'Flex Cable' },
+] as const;
 
-    // ─────────────────────────────────────────────
-    // 1. BRANDS
-    // ─────────────────────────────────────────────
-    const apple = await prisma.brand.create({
-      data: { code: 'AI', name: 'Apple' }
+const partQualities = [
+  { code: 'OR', name: 'Original' },
+  { code: 'RF', name: 'Refurbished' },
+  { code: 'OE', name: 'OEM' },
+] as const;
+
+const partsToCreate = [
+  {
+    brandCode: 'AI',
+    modelCode: 'IP',
+    generation: '15',
+    variantCode: 'PR',
+    partTypeKey: 'Visual Interface:A',
+    qualityCode: 'OR',
+    primaryPhoneKey: 'IP-15-PR',
+    compatibleKeys: ['IP-15-PR'],
+    supplier: 'MobileStar',
+    cost: 8500,
+    price: 14999,
+    initialStock: 25,
+  },
+  {
+    brandCode: 'AI',
+    modelCode: 'IP',
+    generation: '15',
+    variantCode: 'PR',
+    partTypeKey: 'Visual Interface:A',
+    qualityCode: 'RF',
+    primaryPhoneKey: 'IP-15-PR',
+    compatibleKeys: ['IP-15-PR'],
+    supplier: 'MobileStar',
+    cost: 4500,
+    price: 8999,
+    initialStock: 40,
+  },
+  {
+    brandCode: 'AI',
+    modelCode: 'IP',
+    generation: '15',
+    variantCode: 'PM',
+    partTypeKey: 'Chassis & Enclosure:A',
+    qualityCode: 'OE',
+    primaryPhoneKey: 'IP-15-PM',
+    compatibleKeys: ['IP-15-PM'],
+    supplier: 'PartsDirect',
+    cost: 2200,
+    price: 4499,
+    initialStock: 60,
+  },
+  {
+    brandCode: 'AI',
+    modelCode: 'IP',
+    generation: '14',
+    variantCode: 'ZZ',
+    partTypeKey: 'Functional Modules:A',
+    qualityCode: 'OR',
+    primaryPhoneKey: 'IP-14-ZZ',
+    compatibleKeys: ['IP-14-ZZ', 'IP-14-PL'],
+    supplier: 'CellParts Inc',
+    cost: 1800,
+    price: 3499,
+    initialStock: 100,
+  },
+  {
+    brandCode: 'AI',
+    modelCode: 'IP',
+    generation: '16',
+    variantCode: 'ZZ',
+    partTypeKey: 'Interconnects:A',
+    qualityCode: 'RF',
+    primaryPhoneKey: 'IP-16-ZZ',
+    compatibleKeys: ['IP-16-ZZ', 'IP-16-PL'],
+    supplier: null,
+    cost: 800,
+    price: 1999,
+    initialStock: 75,
+  },
+  {
+    brandCode: 'SA',
+    modelCode: 'GS',
+    generation: '24',
+    variantCode: 'UL',
+    partTypeKey: 'Visual Interface:A',
+    qualityCode: 'OR',
+    primaryPhoneKey: 'GS-24-UL',
+    compatibleKeys: ['GS-24-UL'],
+    supplier: 'MobileStar',
+    cost: 11000,
+    price: 19999,
+    initialStock: 15,
+  },
+  {
+    brandCode: 'SA',
+    modelCode: 'GS',
+    generation: '24',
+    variantCode: 'UL',
+    partTypeKey: 'Visual Interface:A',
+    qualityCode: 'RF',
+    primaryPhoneKey: 'GS-24-UL',
+    compatibleKeys: ['GS-24-UL'],
+    supplier: 'MobileStar',
+    cost: 5500,
+    price: 10999,
+    initialStock: 30,
+  },
+  {
+    brandCode: 'SA',
+    modelCode: 'GS',
+    generation: '23',
+    variantCode: 'ZZ',
+    partTypeKey: 'Chassis & Enclosure:C',
+    qualityCode: 'OE',
+    primaryPhoneKey: 'GS-23-ZZ',
+    compatibleKeys: ['GS-23-ZZ', 'GS-23-FE'],
+    supplier: 'PartsDirect',
+    cost: 3000,
+    price: 5999,
+    initialStock: 20,
+  },
+  {
+    brandCode: 'SA',
+    modelCode: 'GS',
+    generation: '24',
+    variantCode: 'ZZ',
+    partTypeKey: 'Chassis & Enclosure:B',
+    qualityCode: 'OR',
+    primaryPhoneKey: 'GS-24-ZZ',
+    compatibleKeys: ['GS-24-ZZ', 'GS-24-PL'],
+    supplier: 'CellParts Inc',
+    cost: 2500,
+    price: 4999,
+    initialStock: 35,
+  },
+  {
+    brandCode: 'SA',
+    modelCode: 'GA',
+    generation: '54',
+    variantCode: 'ZZ',
+    partTypeKey: 'Functional Modules:B',
+    qualityCode: 'RF',
+    primaryPhoneKey: 'GA-54-ZZ',
+    compatibleKeys: ['GA-54-ZZ'],
+    supplier: null,
+    cost: 1500,
+    price: 2999,
+    initialStock: 50,
+  },
+  {
+    brandCode: 'SA',
+    modelCode: 'GA',
+    generation: '55',
+    variantCode: 'ZZ',
+    partTypeKey: 'Interconnects:B',
+    qualityCode: 'OE',
+    primaryPhoneKey: 'GA-55-ZZ',
+    compatibleKeys: ['GA-55-ZZ'],
+    supplier: 'CellParts Inc',
+    cost: 500,
+    price: 1299,
+    initialStock: 0,
+  },
+] as const;
+
+const brandLookup = new Map<string, { code: string; name: string }>([
+  ['AI', { code: 'AI', name: 'Apple' }],
+  ['SA', { code: 'SA', name: 'Samsung' }],
+]);
+
+const modelLookup = new Map<string, { code: string; name: string }>([
+  ['AI-IP', { code: 'IP', name: 'iPhone' }],
+  ['SA-GS', { code: 'GS', name: 'Galaxy S' }],
+  ['SA-GA', { code: 'GA', name: 'Galaxy A' }],
+]);
+
+const partTypeLookup = new Map(partTypeData.map((row) => [`${row.bucketName}:${row.code}`, row]));
+
+const phoneLookup = new Map<string, string>();
+const partTypeIds = new Map<string, string>();
+const qualityIds = new Map<string, string>();
+const bucketIds = new Map<string, number>();
+
+async function upsertBrandsAndModels() {
+  for (const [brandCode, brand] of brandLookup) {
+    const createdBrand = await prisma.brand.upsert({
+      where: { code: brand.code },
+      update: { name: brand.name },
+      create: { code: brand.code, name: brand.name },
     });
 
-    const samsung = await prisma.brand.create({
-      data: { code: 'SA', name: 'Samsung' }
-    });
-
-    console.log('✅ Brands created');
-
-    // ─────────────────────────────────────────────
-    // 2. MODELS
-    // ─────────────────────────────────────────────
-    const iphone = await prisma.model.create({
-      data: { code: 'IP', name: 'iPhone', brandId: apple.id }
-    });
-
-    const galaxy = await prisma.model.create({
-      data: { code: 'GS', name: 'Galaxy S', brandId: samsung.id }
-    });
-
-    const galaxyA = await prisma.model.create({
-      data: { code: 'GA', name: 'Galaxy A', brandId: samsung.id }
-    });
-
-    console.log('✅ Models created');
-
-    // ─────────────────────────────────────────────
-    // 3. PHONES
-    // ─────────────────────────────────────────────
-    const phoneData = [
-      // iPhone 8-13 (base variants)
-      { modelId: iphone.id, generation: '8', variantCode: 'ZZ', variantName: null },
-      { modelId: iphone.id, generation: '9', variantCode: 'ZZ', variantName: null },
-      { modelId: iphone.id, generation: '10', variantCode: 'ZZ', variantName: null },
-      { modelId: iphone.id, generation: '11', variantCode: 'ZZ', variantName: null },
-      { modelId: iphone.id, generation: '12', variantCode: 'ZZ', variantName: null },
-      { modelId: iphone.id, generation: '13', variantCode: 'ZZ', variantName: null },
-
-      // iPhone 14 series
-      { modelId: iphone.id, generation: '14', variantCode: 'ZZ', variantName: null },
-      { modelId: iphone.id, generation: '14', variantCode: 'PL', variantName: 'Plus' },
-      { modelId: iphone.id, generation: '14', variantCode: 'PR', variantName: 'Pro' },
-      { modelId: iphone.id, generation: '14', variantCode: 'PM', variantName: 'Pro Max' },
-
-      // iPhone 15 series
-      { modelId: iphone.id, generation: '15', variantCode: 'ZZ', variantName: null },
-      { modelId: iphone.id, generation: '15', variantCode: 'PL', variantName: 'Plus' },
-      { modelId: iphone.id, generation: '15', variantCode: 'PR', variantName: 'Pro' },
-      { modelId: iphone.id, generation: '15', variantCode: 'PM', variantName: 'Pro Max' },
-
-      // iPhone 16 series
-      { modelId: iphone.id, generation: '16', variantCode: 'ZZ', variantName: null },
-      { modelId: iphone.id, generation: '16', variantCode: 'PL', variantName: 'Plus' },
-      { modelId: iphone.id, generation: '16', variantCode: 'PR', variantName: 'Pro' },
-      { modelId: iphone.id, generation: '16', variantCode: 'PM', variantName: 'Pro Max' },
-
-      // iPhone 17 series (new)
-      { modelId: iphone.id, generation: '17', variantCode: 'ZZ', variantName: null },
-      { modelId: iphone.id, generation: '17', variantCode: 'PL', variantName: 'Plus' },
-      { modelId: iphone.id, generation: '17', variantCode: 'PR', variantName: 'Pro' },
-      { modelId: iphone.id, generation: '17', variantCode: 'PM', variantName: 'Pro Max' },
-
-      // Galaxy S23 series
-      { modelId: galaxy.id, generation: '23', variantCode: 'ZZ', variantName: null },
-      { modelId: galaxy.id, generation: '23', variantCode: 'PL', variantName: 'Plus' },
-      { modelId: galaxy.id, generation: '23', variantCode: 'UL', variantName: 'Ultra' },
-      { modelId: galaxy.id, generation: '23', variantCode: 'FE', variantName: 'FE' },
-
-      // Galaxy S24 series
-      { modelId: galaxy.id, generation: '24', variantCode: 'ZZ', variantName: null },
-      { modelId: galaxy.id, generation: '24', variantCode: 'PL', variantName: 'Plus' },
-      { modelId: galaxy.id, generation: '24', variantCode: 'UL', variantName: 'Ultra' },
-      { modelId: galaxy.id, generation: '24', variantCode: 'FE', variantName: 'FE' },
-
-      // Galaxy A series
-      { modelId: galaxyA.id, generation: '54', variantCode: 'ZZ', variantName: null },
-      { modelId: galaxyA.id, generation: '55', variantCode: 'ZZ', variantName: null },
-    ];
-
-    const phones: Record<string, string> = {}; // key → id lookup
-
-    for (const p of phoneData) {
-      const phone = await prisma.phone.create({ data: p });
-      const key = `${p.modelId === iphone.id ? 'IP' : p.modelId === galaxy.id ? 'GS' : 'GA'}-${p.generation}-${p.variantCode}`;
-      phones[key] = phone.id;
-    }
-
-    console.log(`✅ ${phoneData.length} Phones created`);
-
-    // ─────────────────────────────────────────────
-    // 4. BUCKETS
-    // ─────────────────────────────────────────────
-    const bucket1 = await prisma.bucket.create({ data: { id: 1, name: 'Visual Interface' } });
-    const bucket2 = await prisma.bucket.create({ data: { id: 2, name: 'Chassis & Enclosure' } });
-    const bucket3 = await prisma.bucket.create({ data: { id: 3, name: 'Functional Modules' } });
-    const bucket4 = await prisma.bucket.create({ data: { id: 4, name: 'Interconnects' } });
-
-    console.log('✅ Buckets created');
-
-    // ─────────────────────────────────────────────
-    // 5. PART TYPES
-    // ─────────────────────────────────────────────
-    const partTypes: Record<string, { id: string; code: string; bucketId: number }> = {};
-
-    const partTypeData = [
-      // Bucket 1: Visual Interface
-      { code: 'A', name: 'Screen',    bucketId: bucket1.id },
-      { code: 'B', name: 'Display',   bucketId: bucket1.id },
-      { code: 'C', name: 'Digitizer', bucketId: bucket1.id },
-
-      // Bucket 2: Chassis & Enclosure
-      { code: 'A', name: 'Back Glass', bucketId: bucket2.id },
-      { code: 'B', name: 'Frame',      bucketId: bucket2.id },
-      { code: 'C', name: 'Housing',    bucketId: bucket2.id },
-
-      // Bucket 3: Functional Modules (examples)
-      { code: 'A', name: 'Battery',    bucketId: bucket3.id },
-      { code: 'B', name: 'Camera',     bucketId: bucket3.id },
-
-      // Bucket 4: Interconnects (examples)
-      { code: 'A', name: 'Charge Port', bucketId: bucket4.id },
-      { code: 'B', name: 'Flex Cable',  bucketId: bucket4.id },
-    ];
-
-    for (const pt of partTypeData) {
-      const created = await prisma.partType.create({ data: pt });
-      const key = `${pt.bucketId}${pt.code}`; // e.g. "1A" = Screen, "2C" = Housing
-      partTypes[key] = { id: created.id, code: pt.code, bucketId: pt.bucketId };
-    }
-
-    console.log('✅ Part types created');
-
-    // ─────────────────────────────────────────────
-    // 6. PART QUALITIES
-    // ─────────────────────────────────────────────
-    const qualityOr = await prisma.partQuality.create({
-      data: { code: 'OR', name: 'Original' }
-    });
-
-    const qualityRf = await prisma.partQuality.create({
-      data: { code: 'RF', name: 'Refurbished' }
-    });
-
-    const qualityOem = await prisma.partQuality.create({
-      data: { code: 'OE', name: 'OEM' }
-    });
-
-    console.log('✅ Part qualities created');
-
-    // ─────────────────────────────────────────────
-    // 7. PARTS (with search index & compatibilities)
-    // ─────────────────────────────────────────────
-    const partsToCreate = [
-      // ── iPhone 15 Pro Screen (Original) ──
-      {
-        brandCode: 'AI', modelCode: 'IP', generation: '15', variantCode: 'PR',
-        partTypeKey: '1A',
-        quality: qualityOr,
-        primaryPhoneKey: 'IP-15-PR',
-        compatibleKeys: ['IP-15-PR'],
-        supplier: 'MobileStar',
-        cost: 8500, price: 14999, initialStock: 25,
-      },
-      {
-        brandCode: 'AI', modelCode: 'IP', generation: '15', variantCode: 'PR',
-        partTypeKey: '1A',
-        quality: qualityRf,
-        primaryPhoneKey: 'IP-15-PR',
-        compatibleKeys: ['IP-15-PR'],
-        supplier: 'MobileStar',
-        cost: 4500, price: 8999, initialStock: 40,
-      },
-      {
-        brandCode: 'AI', modelCode: 'IP', generation: '15', variantCode: 'PM',
-        partTypeKey: '2A',
-        quality: qualityOem,
-        primaryPhoneKey: 'IP-15-PM',
-        compatibleKeys: ['IP-15-PM'],
-        supplier: 'PartsDirect',
-        cost: 2200, price: 4499, initialStock: 60,
-      },
-      {
-        brandCode: 'AI', modelCode: 'IP', generation: '14', variantCode: 'ZZ',
-        partTypeKey: '3A',
-        quality: qualityOr,
-        primaryPhoneKey: 'IP-14-ZZ',
-        compatibleKeys: ['IP-14-ZZ', 'IP-14-PL'],
-        supplier: 'CellParts Inc',
-        cost: 1800, price: 3499, initialStock: 100,
-      },
-      {
-        brandCode: 'AI', modelCode: 'IP', generation: '16', variantCode: 'ZZ',
-        partTypeKey: '4A',
-        quality: qualityRf,
-        primaryPhoneKey: 'IP-16-ZZ',
-        compatibleKeys: ['IP-16-ZZ', 'IP-16-PL'],
-        supplier: null,
-        cost: 800, price: 1999, initialStock: 75,
-      },
-      {
-        brandCode: 'SA', modelCode: 'GS', generation: '24', variantCode: 'UL',
-        partTypeKey: '1A',
-        quality: qualityOr,
-        primaryPhoneKey: 'GS-24-UL',
-        compatibleKeys: ['GS-24-UL'],
-        supplier: 'MobileStar',
-        cost: 11000, price: 19999, initialStock: 15,
-      },
-      {
-        brandCode: 'SA', modelCode: 'GS', generation: '24', variantCode: 'UL',
-        partTypeKey: '1A',
-        quality: qualityRf,
-        primaryPhoneKey: 'GS-24-UL',
-        compatibleKeys: ['GS-24-UL'],
-        supplier: 'MobileStar',
-        cost: 5500, price: 10999, initialStock: 30,
-      },
-      {
-        brandCode: 'SA', modelCode: 'GS', generation: '23', variantCode: 'ZZ',
-        partTypeKey: '2C',
-        quality: qualityOem,
-        primaryPhoneKey: 'GS-23-ZZ',
-        compatibleKeys: ['GS-23-ZZ', 'GS-23-FE'],
-        supplier: 'PartsDirect',
-        cost: 3000, price: 5999, initialStock: 20,
-      },
-      {
-        brandCode: 'SA', modelCode: 'GS', generation: '24', variantCode: 'ZZ',
-        partTypeKey: '2B',
-        quality: qualityOr,
-        primaryPhoneKey: 'GS-24-ZZ',
-        compatibleKeys: ['GS-24-ZZ', 'GS-24-PL'],
-        supplier: 'CellParts Inc',
-        cost: 2500, price: 4999, initialStock: 35,
-      },
-      {
-        brandCode: 'SA', modelCode: 'GA', generation: '54', variantCode: 'ZZ',
-        partTypeKey: '3B',
-        quality: qualityRf,
-        primaryPhoneKey: 'GA-54-ZZ',
-        compatibleKeys: ['GA-54-ZZ'],
-        supplier: null,
-        cost: 1500, price: 2999, initialStock: 50,
-      },
-      {
-        brandCode: 'SA', modelCode: 'GA', generation: '55', variantCode: 'ZZ',
-        partTypeKey: '4B',
-        quality: qualityOem,
-        primaryPhoneKey: 'GA-55-ZZ',
-        compatibleKeys: ['GA-55-ZZ'],
-        supplier: 'CellParts Inc',
-        cost: 500, price: 1299, initialStock: 0,
-      },
-    ];
-
-    const modelLookup: Record<string, { brandName: string; modelName: string }> = {
-      'AI-IP': { brandName: 'apple', modelName: 'iphone' },
-      'SA-GS': { brandName: 'samsung', modelName: 'galaxy s' },
-      'SA-GA': { brandName: 'samsung', modelName: 'galaxy a' },
-    };
-
-    const partTypeLookup: Record<string, string> = {
-      '1A': 'screen', '1B': 'display', '1C': 'digitizer',
-      '2A': 'back glass', '2B': 'frame', '2C': 'housing',
-      '3A': 'battery', '3B': 'camera',
-      '4A': 'charge port', '4B': 'flex cable',
-    };
-
-    const createdParts: { sku: string; id: string }[] = [];
-
-    for (const p of partsToCreate) {
-      const pt = partTypes[p.partTypeKey];
-      const skuData = generateSku({
-        brandCode: p.brandCode,
-        modelCode: p.modelCode,
-        generation: p.generation,
-        variantCode: p.variantCode,
-        bucketId: pt.bucketId,
-        partTypeCode: pt.code,
-        qualityCode: p.quality.code,
+    for (const [modelKey, model] of modelLookup) {
+      if (!modelKey.startsWith(`${brandCode}-`)) continue;
+      await prisma.model.upsert({
+        where: {
+          brandId_code: {
+            brandId: createdBrand.id,
+            code: model.code,
+          },
+        },
+        update: { name: model.name },
+        create: { brandId: createdBrand.id, code: model.code, name: model.name },
       });
-
-      const modelKey = `${p.brandCode}-${p.modelCode}`;
-      const model = modelLookup[modelKey];
-      const variantName = phoneData.find(
-        ph => ph.generation === p.generation && ph.variantCode === p.variantCode
-      )?.variantName;
-
-      const searchTerms = [
-        model.brandName,
-        model.modelName,
-        `s${p.generation}`,
-        p.variantCode !== 'ZZ' ? p.variantCode.toLowerCase() : null,
-        variantName?.toLowerCase(),
-        partTypeLookup[p.partTypeKey],
-        p.quality.name.toLowerCase(),
-        skuData.sku.toLowerCase(),
-      ].filter(Boolean) as string[];
-
-      const searchIndex = [...new Set(searchTerms)].join(' ');
-
-      const part = await prisma.partMaster.create({
-        data: {
-          sku: skuData.sku,
-          searchIndex,
-          partTypeId: pt.id,
-          qualityId: p.quality.id,
-          primaryPhoneId: phones[p.primaryPhoneKey],
-          supplier: p.supplier,
-          cost: p.cost,
-          price: p.price,
-          stock: p.initialStock,
-          compatibilities: {
-            create: [...new Set(p.compatibleKeys)].map(key => ({
-              phoneId: phones[key]
-            }))
-          }
-        }
-      });
-
-      createdParts.push({ sku: skuData.sku, id: part.id });
     }
-
-    console.log(`✅ ${createdParts.length} Parts created`);
-
-    // ─────────────────────────────────────────────
-    // 8. PART ALIASES
-    // ─────────────────────────────────────────────
-    const aliasData = [
-      { sku: createdParts[0].sku, supplier: 'MobileStar',    supplierSku: 'MS-IP15P-SCR-OG',  supplierName: 'iPhone 15 Pro Screen Original' },
-      { sku: createdParts[1].sku, supplier: 'MobileStar',    supplierSku: 'MS-IP15P-SCR-RF',  supplierName: 'iPhone 15 Pro Screen Refurb' },
-      { sku: createdParts[5].sku, supplier: 'MobileStar',    supplierSku: 'MS-S24U-SCR-OG',   supplierName: 'Galaxy S24 Ultra Screen OG' },
-      { sku: createdParts[2].sku, supplier: 'PartsDirect',   supplierSku: 'PD-15PM-BG-OEM',   supplierName: 'iPhone 15 PM Back Glass' },
-      { sku: createdParts[3].sku, supplier: 'CellParts Inc', supplierSku: 'CP-IP14-BAT-OR',   supplierName: 'iPhone 14 Battery Original' },
-      { sku: createdParts[7].sku, supplier: 'PartsDirect',   supplierSku: 'PD-S23-HSG-OEM',   supplierName: 'Galaxy S23 Housing OEM' },
-    ];
-
-    for (const alias of aliasData) {
-      const part = createdParts.find(p => p.sku === alias.sku);
-      if (part) {
-        await prisma.partAlias.create({
-          data: {
-            partId: part.id,
-            supplier: alias.supplier,
-            supplierSku: alias.supplierSku,
-            supplierName: alias.supplierName,
-          }
-        });
-      }
-    }
-
-    console.log(`✅ ${aliasData.length} Part aliases created`);
-
-    // ─────────────────────────────────────────────
-    // 9. STOCK LEDGER
-    // ─────────────────────────────────────────────
-    const ledgerEntries = createdParts
-      .filter((_, i) => partsToCreate[i].initialStock > 0)
-      .map((part, i) => ({
-        partId: part.id,
-        change: partsToCreate[i].initialStock,
-        balance: partsToCreate[i].initialStock,
-        reason: 'INITIAL_STOCK',
-        reference: 'seed',
-      }));
-
-    for (const entry of ledgerEntries) {
-      await prisma.stockLedger.create({ data: entry });
-    }
-
-    console.log(`✅ ${ledgerEntries.length} Stock ledger entries created`);
-
-    console.log('\n✅ Seeding complete!\n');
-  } catch (err) {
-    console.error('❌ Seed execution failed:', err);
-    throw err;
-  } finally {
-    await prisma.$disconnect();
-    await pool.end();
   }
 }
 
+async function upsertPhones() {
+  const iphone = await prisma.model.findFirst({
+    where: { code: 'IP' },
+    select: { id: true },
+  });
+  const galaxyS = await prisma.model.findFirst({
+    where: { code: 'GS' },
+    select: { id: true },
+  });
+  const galaxyA = await prisma.model.findFirst({
+    where: { code: 'GA' },
+    select: { id: true },
+  });
+
+  if (!iphone || !galaxyS || !galaxyA) {
+    throw new Error('Expected base models to exist before seeding phones');
+  }
+
+  const modelByCode = new Map<string, string>([
+    ['IP', iphone.id],
+    ['GS', galaxyS.id],
+    ['GA', galaxyA.id],
+  ]);
+
+  for (const phone of phoneData) {
+    const modelId = modelByCode.get(phone.modelCode);
+    if (!modelId) throw new Error(`Missing model for ${phone.modelCode}`);
+
+    const created = await prisma.phone.upsert({
+      where: {
+        modelId_generation_variantCode: {
+          modelId,
+          generation: phone.generation,
+          variantCode: phone.variantCode,
+        },
+      },
+      update: {
+        variantName: phone.variantName,
+        externalModelId: null,
+      },
+      create: {
+        modelId,
+        generation: phone.generation,
+        variantCode: phone.variantCode,
+        variantName: phone.variantName,
+        externalModelId: null,
+      },
+    });
+
+    phoneLookup.set(`${phone.modelCode}-${phone.generation}-${phone.variantCode}`, created.id);
+  }
+}
+
+async function upsertBucketsPartTypesAndQualities() {
+  const bucketNames = [...new Set(partTypeData.map((row) => row.bucketName))];
+
+  for (const bucketName of bucketNames) {
+    const bucket = await prisma.bucket.upsert({
+      where: { name: bucketName },
+      update: {},
+      create: { name: bucketName },
+    });
+    bucketIds.set(bucketName, bucket.id);
+  }
+
+  for (const row of partTypeData) {
+    const bucketId = bucketIds.get(row.bucketName);
+    if (!bucketId) throw new Error(`Missing bucket: ${row.bucketName}`);
+
+    const created = await prisma.partType.upsert({
+      where: {
+        bucketId_code: {
+          bucketId,
+          code: row.code,
+        },
+      },
+      update: { name: row.name },
+      create: { bucketId, code: row.code, name: row.name },
+    });
+    partTypeIds.set(`${row.bucketName}:${row.code}`, created.id);
+  }
+
+  for (const quality of partQualities) {
+    const created = await prisma.partQuality.upsert({
+      where: { code: quality.code },
+      update: { name: quality.name },
+      create: { code: quality.code, name: quality.name },
+    });
+    qualityIds.set(quality.code, created.id);
+  }
+}
+
+async function upsertParts() {
+  const partTypeAlias: Record<string, string> = {
+    'Visual Interface:A': 'screen',
+    'Visual Interface:B': 'display',
+    'Visual Interface:C': 'digitizer',
+    'Chassis & Enclosure:A': 'back glass',
+    'Chassis & Enclosure:B': 'frame',
+    'Chassis & Enclosure:C': 'housing',
+    'Functional Modules:A': 'battery',
+    'Functional Modules:B': 'camera',
+    'Interconnects:A': 'charge port',
+    'Interconnects:B': 'flex cable',
+  };
+
+  for (const item of partsToCreate) {
+    const partType = partTypeLookup.get(item.partTypeKey);
+    const partTypeId = partTypeIds.get(item.partTypeKey);
+    const qualityId = qualityIds.get(item.qualityCode);
+    const primaryPhoneId = phoneLookup.get(item.primaryPhoneKey);
+
+    if (!partType || !partTypeId || !qualityId || !primaryPhoneId) {
+      throw new Error(`Missing seed dependency for ${item.brandCode}-${item.modelCode}-${item.generation}-${item.variantCode}`);
+    }
+
+    const bucketId = bucketIds.get(partType.bucketName);
+    if (!bucketId) {
+      throw new Error(`Missing bucket id for ${partType.bucketName}`);
+    }
+
+    const skuData = generateSku({
+      brandCode: item.brandCode,
+      modelCode: item.modelCode,
+      generation: item.generation,
+      variantCode: item.variantCode,
+      bucketId,
+      partTypeCode: partType.code,
+      qualityCode: item.qualityCode,
+    });
+
+    const model = item.brandCode === 'AI'
+      ? { brandName: 'apple', modelName: 'iphone' }
+      : item.modelCode === 'GS'
+        ? { brandName: 'samsung', modelName: 'galaxy s' }
+        : { brandName: 'samsung', modelName: 'galaxy a' };
+
+    const variantName = phoneData.find(
+      (phone) =>
+        phone.modelCode === item.modelCode &&
+        phone.generation === item.generation &&
+        phone.variantCode === item.variantCode
+    )?.variantName;
+
+    const searchTerms = [
+      model.brandName,
+      model.modelName,
+      `s${item.generation}`,
+      item.variantCode !== 'ZZ' ? item.variantCode.toLowerCase() : null,
+      variantName?.toLowerCase(),
+      partTypeAlias[item.partTypeKey],
+      partQualities.find((quality) => quality.code === item.qualityCode)?.name.toLowerCase(),
+      skuData.sku.toLowerCase(),
+    ].filter(Boolean) as string[];
+
+    const searchIndex = [...new Set(searchTerms)].join(' ');
+
+    const part = await prisma.partMaster.upsert({
+      where: { sku: skuData.sku },
+      update: {
+        searchIndex,
+        partTypeId,
+        qualityId,
+        primaryPhoneId,
+        supplier: item.supplier,
+        cost: item.cost,
+        price: item.price,
+        stock: item.initialStock,
+      },
+      create: {
+        sku: skuData.sku,
+        searchIndex,
+        partTypeId,
+        qualityId,
+        primaryPhoneId,
+        supplier: item.supplier,
+        cost: item.cost,
+        price: item.price,
+        stock: item.initialStock,
+      },
+    });
+
+    for (const phoneKey of new Set(item.compatibleKeys)) {
+      const phoneId = phoneLookup.get(phoneKey);
+      if (!phoneId) continue;
+
+      await prisma.phoneCompatibility.upsert({
+        where: {
+          partId_phoneId: {
+            partId: part.id,
+            phoneId,
+          },
+        },
+        update: {},
+        create: {
+          partId: part.id,
+          phoneId,
+        },
+      });
+    }
+
+    if (item.supplier) {
+      await prisma.partAlias.upsert({
+        where: {
+          supplier_supplierSku: {
+            supplier: item.supplier,
+            supplierSku: `${item.brandCode}-${item.modelCode}-${item.generation}-${item.variantCode}-${item.qualityCode}`,
+          },
+        },
+        update: {
+          partId: part.id,
+          supplierName: `${model.brandName} ${model.modelName} ${item.generation} ${item.variantCode}`.trim(),
+        },
+        create: {
+          partId: part.id,
+          supplier: item.supplier,
+          supplierSku: `${item.brandCode}-${item.modelCode}-${item.generation}-${item.variantCode}-${item.qualityCode}`,
+          supplierName: `${model.brandName} ${model.modelName} ${item.generation} ${item.variantCode}`.trim(),
+        },
+      });
+    }
+
+    const existingLedger = await prisma.stockLedger.findFirst({
+      where: {
+        partId: part.id,
+        reference: 'seed',
+        reason: 'INITIAL_STOCK',
+      },
+      select: { id: true },
+    });
+
+    if (!existingLedger && item.initialStock > 0) {
+      await prisma.stockLedger.create({
+        data: {
+          partId: part.id,
+          change: item.initialStock,
+          balance: item.initialStock,
+          reason: 'INITIAL_STOCK',
+          reference: 'seed',
+        },
+      });
+    }
+  }
+}
+
+async function main() {
+  console.log('🌱 Seeding database with upserts...');
+  await upsertBrandsAndModels();
+  await upsertPhones();
+  await upsertBucketsPartTypesAndQualities();
+  await upsertParts();
+  console.log('✅ Seed upsert complete');
+}
+
 main()
-  .catch(() => {
+  .catch((error) => {
+    console.error('❌ Seed execution failed:', error);
     process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
   });

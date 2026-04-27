@@ -136,7 +136,7 @@ values
     14999,
     1,
     24,
-    null
+    '/product.png'
   ),
   (
     'AP-IP15PR-BAT-PREM',
@@ -148,7 +148,7 @@ values
     8999,
     1,
     38,
-    null
+    '/product.png'
   ),
   (
     'AP-IP14-BGLASS-OEM',
@@ -160,7 +160,7 @@ values
     6499,
     1,
     52,
-    null
+    '/product.png'
   ),
   (
     'AP-IP16-PORT-PREM',
@@ -172,7 +172,7 @@ values
     7999,
     1,
     31,
-    null
+    '/product.png'
   ),
   (
     'SA-GS24U-SCR-OEM',
@@ -184,7 +184,7 @@ values
     18999,
     1,
     16,
-    null
+    '/product.png'
   ),
   (
     'SA-GS23-HOUS-PREM',
@@ -196,7 +196,7 @@ values
     10999,
     1,
     27,
-    null
+    '/product.png'
   ),
   (
     'SA-GA55-BAT-OEM',
@@ -208,7 +208,7 @@ values
     5299,
     1,
     44,
-    null
+    '/product.png'
   ),
   (
     'SA-GA54-FLEX-AFT',
@@ -220,7 +220,7 @@ values
     3499,
     1,
     61,
-    null
+    '/product.png'
   )
 on conflict (sku_id) do update
 set

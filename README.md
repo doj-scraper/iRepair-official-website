@@ -13,6 +13,7 @@ For a deeper internal map of the codebase, read [ARCHITECTURE.md](./ARCHITECTURE
 - Admin users can manage inventory and review orders on `/admin`.
 - Cart checkout is handled through a Stripe handoff.
 - Product images use the inventory `image_url` when available and fall back to `/F8B48E10-46F9-4474-A98F-191D370F222D.png`.
+- Seeded inventory rows use `/product.png` for the default product image path.
 
 ## Live routes
 
@@ -178,6 +179,7 @@ When you change auth, checkout, admin access, or route behavior, add a regressio
    SUPABASE_URL=https://your-project.supabase.co
    SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
    DATABASE_URL=postgresql://user:password@host:port/dbname
+   DATABASE_URL_DIRECT=postgresql://user:password@direct-host:port/dbname
    STRIPE_SECRET_KEY=sk_test_...
    ```
 
@@ -187,13 +189,19 @@ When you change auth, checkout, admin access, or route behavior, add a regressio
    npm run prisma:generate
    ```
 
-4. Seed data if the task requires a populated database.
+4. Apply the Prisma migration before seeding a fresh database.
+
+   ```bash
+   npm run prisma:migrate:deploy
+   ```
+
+5. Seed data if the task requires a populated database.
 
    ```bash
    npm run prisma:db:seed
    ```
 
-5. Run the app.
+6. Run the app.
 
    ```bash
    npm run dev

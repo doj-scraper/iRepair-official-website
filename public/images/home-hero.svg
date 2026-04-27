@@ -1,0 +1,84 @@
+<svg width="1200" height="900" viewBox="0 0 1200 900" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">iRepair Connect wholesale parts illustration</title>
+  <desc id="desc">Abstract illustration of phone parts, shipping boxes, and a repair bench in the brand color palette.</desc>
+  <defs>
+    <linearGradient id="bg" x1="120" y1="80" x2="1080" y2="820" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F7FBFF"/>
+      <stop offset="1" stop-color="#DDF0F7"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="310" y1="220" x2="890" y2="680" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2F7EA1"/>
+      <stop offset="1" stop-color="#1F546F"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="470" y1="170" x2="760" y2="560" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#67C7C6"/>
+      <stop offset="1" stop-color="#2A8B89"/>
+    </linearGradient>
+    <linearGradient id="box" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#F7E6A0"/>
+      <stop offset="1" stop-color="#E1C86D"/>
+    </linearGradient>
+    <filter id="shadow" x="0" y="0" width="1200" height="900" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="20" stdDeviation="24" flood-color="#1B4960" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="900" rx="48" fill="url(#bg)"/>
+  <circle cx="990" cy="160" r="130" fill="#BEE8E7" opacity="0.55"/>
+  <circle cx="190" cy="740" r="180" fill="#BFDFF0" opacity="0.35"/>
+  <path d="M0 720C170 655 305 635 480 662C640 686 780 746 960 720C1068 704 1138 679 1200 650V900H0V720Z" fill="#C9E6EE"/>
+
+  <g filter="url(#shadow)">
+    <rect x="180" y="170" width="840" height="560" rx="38" fill="white" opacity="0.92"/>
+  </g>
+
+  <g opacity="0.95">
+    <rect x="240" y="230" width="236" height="340" rx="30" fill="url(#panel)"/>
+    <rect x="260" y="250" width="196" height="280" rx="20" fill="#0F2533" opacity="0.92"/>
+    <rect x="329" y="246" width="58" height="12" rx="6" fill="#D9EEF5"/>
+    <circle cx="358" cy="552" r="20" fill="#D9EEF5" opacity="0.75"/>
+    <rect x="288" y="292" width="140" height="172" rx="18" fill="url(#accent)"/>
+    <path d="M320 315H396L382 391H336L320 315Z" fill="#EEF8F7" opacity="0.9"/>
+    <rect x="308" y="422" width="100" height="16" rx="8" fill="#D9EEF5" opacity="0.7"/>
+    <rect x="308" y="448" width="74" height="16" rx="8" fill="#D9EEF5" opacity="0.45"/>
+  </g>
+
+  <g>
+    <rect x="540" y="220" width="390" height="230" rx="30" fill="#EAF7FB" stroke="#C6E3EB" stroke-width="4"/>
+    <path d="M575 278C575 248 599 224 629 224H841C871 224 895 248 895 278V368C895 398 871 422 841 422H629C599 422 575 398 575 368V278Z" fill="#11222E"/>
+    <rect x="606" y="248" width="258" height="144" rx="18" fill="#2E3740"/>
+    <rect x="642" y="278" width="186" height="84" rx="12" fill="#67C7C6" opacity="0.28"/>
+    <circle cx="790" cy="390" r="8" fill="#D9EEF5"/>
+    <circle cx="742" cy="390" r="8" fill="#D9EEF5" opacity="0.65"/>
+    <path d="M618 420H870" stroke="#9FD5D3" stroke-width="6" stroke-linecap="round"/>
+  </g>
+
+  <g>
+    <rect x="624" y="492" width="250" height="160" rx="24" fill="url(#box)"/>
+    <rect x="650" y="520" width="200" height="12" rx="6" fill="#9D8232" opacity="0.55"/>
+    <rect x="650" y="546" width="150" height="12" rx="6" fill="#9D8232" opacity="0.45"/>
+    <rect x="650" y="572" width="170" height="12" rx="6" fill="#9D8232" opacity="0.35"/>
+    <path d="M688 492L724 452H770L734 492H688Z" fill="#EAD57F"/>
+    <path d="M810 492L846 452H892L856 492H810Z" fill="#EAD57F"/>
+  </g>
+
+  <g>
+    <rect x="252" y="622" width="268" height="86" rx="24" fill="#FFFFFF" stroke="#C6E3EB" stroke-width="4"/>
+    <circle cx="310" cy="665" r="24" fill="#2A8B89"/>
+    <rect x="352" y="646" width="128" height="12" rx="6" fill="#7D96A2"/>
+    <rect x="352" y="668" width="96" height="10" rx="5" fill="#A7BAC3"/>
+  </g>
+
+  <g opacity="0.9">
+    <path d="M470 232L492 214L514 232L492 250L470 232Z" fill="#67C7C6"/>
+    <path d="M935 250L958 232L980 250L958 268L935 250Z" fill="#67C7C6" opacity="0.7"/>
+    <path d="M502 614L524 596L546 614L524 632L502 614Z" fill="#E1C86D" opacity="0.75"/>
+  </g>
+
+  <g opacity="0.7">
+    <circle cx="220" cy="214" r="10" fill="#67C7C6"/>
+    <circle cx="1000" cy="286" r="12" fill="#2A8B89"/>
+    <circle cx="940" cy="650" r="10" fill="#E1C86D"/>
+    <circle cx="154" cy="548" r="12" fill="#2F7EA1"/>
+  </g>
+</svg>

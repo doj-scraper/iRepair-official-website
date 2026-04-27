@@ -93,11 +93,10 @@ export default function HomePage() {
           <div className="relative hidden md:block">
             <div className="absolute right-0 top-1/2 h-80 w-80 -translate-y-1/2 rounded-3xl border border-primary-foreground/20 bg-primary-foreground/5 p-1 backdrop-blur-md shadow-elegant overflow-hidden">
               <img
-                alt="Houston skyline"
+                alt="Wholesale repair parts illustration"
                 loading="lazy"
-                src="/images/houston-2.jpg"
-                srcSet="/images/houston-2.jpg 1200w, /images/houston-2-800.jpg 800w"
-                className="h-full w-full rounded-3xl object-cover"
+                src="/images/home-hero.svg"
+                className="h-full w-full rounded-3xl object-cover bg-[#f7fbff]"
               />
             </div>
           </div>

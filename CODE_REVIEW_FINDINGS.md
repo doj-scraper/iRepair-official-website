@@ -1,6 +1,8 @@
 # iRepair Connect Review Findings
 
-This document captures the seven highest-signal issues found in the current repo state and a practical workflow for fixing each one.
+This document captures the seven highest-signal issues that were found during review and a practical workflow for fixing each one.
+
+Status note: the working tree has since addressed most of these items, but the workflows are kept here as a durable record of what was wrong and how each issue was approached.
 
 ## 1. Checkout auth is broken end to end
 
