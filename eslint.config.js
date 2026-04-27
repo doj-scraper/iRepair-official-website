@@ -5,7 +5,19 @@ import reactRefresh from "eslint-plugin-react-refresh";
 import tseslint from "typescript-eslint";
 
 export default tseslint.config(
-  { ignores: ["dist", ".next", "prisma/prismaGeneratorClient.js", "seed-screen.js"] },
+  {
+    ignores: [
+      "dist",
+      "**/dist",
+      ".next",
+      "**/.next",
+      "**/.next/**",
+      "clean-next-repo/**",
+      "prisma/prismaGeneratorClient.js",
+      "**/prisma/prismaGeneratorClient.js",
+      "seed-screen.js",
+    ],
+  },
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     files: ["**/*.{ts,tsx}"],

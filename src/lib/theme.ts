@@ -37,8 +37,13 @@ const DEFAULT_PALETTE: PaletteId = 'default';
  * Keep this minimal: no imports, no closures that capture outer scope.
  */
 export const PALETTE_INIT_SCRIPT = `(function(){
-  var k='${PALETTE_STORAGE_KEY}';
-  var valid=${JSON.stringify(PALETTE_IDS)};
-  var p=localStorage.getItem(k);
-  document.documentElement.setAttribute('data-palette', valid.includes(p)?p:'${DEFAULT_PALETTE}');
+  try {
+    var k='${PALETTE_STORAGE_KEY}';
+    var valid=${JSON.stringify(PALETTE_IDS)};
+    var storage = window.localStorage;
+    var p = storage && typeof storage.getItem === 'function' ? storage.getItem(k) : null;
+    document.documentElement.setAttribute('data-palette', valid.includes(p)?p:'${DEFAULT_PALETTE}');
+  } catch (e) {
+    document.documentElement.setAttribute('data-palette', '${DEFAULT_PALETTE}');
+  }
 })()`;

@@ -10,16 +10,35 @@ function isValidPalette(v: string | null): v is PaletteId {
   return PALETTE_IDS.includes(v as PaletteId);
 }
 
+function getPaletteStorage() {
+  if (typeof window === 'undefined') return null;
+
+  const storage = window.localStorage as Storage | undefined;
+  if (
+    !storage ||
+    typeof storage.getItem !== 'function' ||
+    typeof storage.setItem !== 'function'
+  ) {
+    return null;
+  }
+
+  return storage;
+}
+
 export function usePalette() {
   const [palette, setPaletteState] = useState<PaletteId>(() => {
-    if (typeof window === 'undefined') return DEFAULT_PALETTE;
-    const stored = localStorage.getItem(PALETTE_STORAGE_KEY);
+    const storage = getPaletteStorage();
+    if (!storage) return DEFAULT_PALETTE;
+
+    const stored = storage.getItem(PALETTE_STORAGE_KEY);
     return isValidPalette(stored) ? stored : DEFAULT_PALETTE;
   });
 
   useEffect(() => {
     document.documentElement.setAttribute('data-palette', palette);
-    localStorage.setItem(PALETTE_STORAGE_KEY, palette);
+
+    const storage = getPaletteStorage();
+    storage?.setItem(PALETTE_STORAGE_KEY, palette);
   }, [palette]);
 
   const setPalette = useCallback((next: PaletteId) => {
