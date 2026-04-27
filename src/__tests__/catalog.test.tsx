@@ -11,6 +11,13 @@ vi.mock('next/link', () => ({
 vi.mock('next/navigation', () => ({
   useRouter: () => ({ push: () => {}, replace: () => {}, back: () => {} }),
   usePathname: () => '/',
+  useSearchParams: () => mockSearchParams,
+}));
+
+const mockSearchParams = new URLSearchParams('');
+
+vi.mock("@/components/ui/theme-switcher", () => ({
+  ThemeSwitcher: () => null,
 }));
 
 const mockProducts = [
@@ -71,7 +78,11 @@ vi.mock("@/context/AuthContext", () => ({
   useAuth: () => ({ user: null, loading: false, signOut: vi.fn() }),
 }));
 
-import Catalog from "@/pages/Catalog";
+vi.mock("@/hooks/useIsAdmin", () => ({
+  useIsAdmin: () => ({ isAdmin: false, loading: false }),
+}));
+
+import Catalog from "@/app/catalog/page";
 
 test("renders catalog and filters by search", () => {
   const qc = new QueryClient();

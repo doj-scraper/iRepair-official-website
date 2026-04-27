@@ -1,15 +1,7 @@
 import type { Metadata } from 'next';
-import { Plus_Jakarta_Sans } from 'next/font/google';
 import '@/index.css';
 import Providers from './providers';
 import { PALETTE_INIT_SCRIPT } from '@/lib/theme';
-
-const plusJakarta = Plus_Jakarta_Sans({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700', '800'],
-  variable: '--font-jakarta',
-  display: 'swap',
-});
 
 export const metadata: Metadata = {
   title: 'iRepair Connect',
@@ -22,7 +14,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning className={plusJakarta.variable}>
+    <html lang="en" suppressHydrationWarning>
       <head>
         {/* Synchronously apply saved palette before first paint to prevent flash */}
         <script dangerouslySetInnerHTML={{ __html: PALETTE_INIT_SCRIPT }} />

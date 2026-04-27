@@ -1,18 +1,30 @@
 import { NavLink } from "@/components/NavLink";
-import { Home, Grid3x3, Info, LogIn, ShoppingCart } from "lucide-react";
+import { Home, Grid3x3, Info, LogIn, ShoppingCart, ClipboardList, Shield } from "lucide-react";
 import { useCart } from "@/store/cart";
 import { cn } from "@/lib/utils";
-
-const ITEMS = [
-  { to: "/", label: "Home", icon: Home, end: true },
-  { to: "/catalog", label: "Catalog", icon: Grid3x3 },
-  { to: "/about", label: "About", icon: Info },
-  { to: "/login", label: "Log in", icon: LogIn },
-];
+import { useAuth } from "@/context/AuthContext";
+import { useIsAdmin } from "@/hooks/useIsAdmin";
 
 export const MobileNav = () => {
   const { items, setOpen } = useCart();
+  const { user } = useAuth();
+  const { isAdmin } = useIsAdmin();
   const count = items.reduce((a, i) => a + i.quantity, 0);
+  const navItems = user
+    ? [
+        { to: "/", label: "Home", icon: Home, end: true },
+        { to: "/catalog", label: "Catalog", icon: Grid3x3 },
+        { to: "/orders", label: "Orders", icon: ClipboardList },
+        isAdmin
+          ? { to: "/admin", label: "Admin", icon: Shield }
+          : { to: "/about", label: "About", icon: Info },
+      ]
+    : [
+        { to: "/", label: "Home", icon: Home, end: true },
+        { to: "/catalog", label: "Catalog", icon: Grid3x3 },
+        { to: "/about", label: "About", icon: Info },
+        { to: "/login", label: "Log in", icon: LogIn },
+      ];
 
   return (
     <nav
@@ -20,7 +32,7 @@ export const MobileNav = () => {
       aria-label="Primary"
     >
       <div className="grid grid-cols-5">
-        {ITEMS.slice(0, 2).map((n) => (
+        {navItems.slice(0, 2).map((n) => (
           <NavItem key={n.to} {...n} />
         ))}
         {/* Center cart FAB */}
@@ -38,7 +50,7 @@ export const MobileNav = () => {
             )}
           </div>
         </button>
-        {ITEMS.slice(2).map((n) => (
+        {navItems.slice(2).map((n) => (
           <NavItem key={n.to} {...n} />
         ))}
       </div>

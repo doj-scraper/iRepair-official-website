@@ -1,4 +1,5 @@
 import { render, screen, within } from "@testing-library/react";
+import { vi } from "vitest";
 
 vi.mock('next/link', () => ({
   default: ({ href, children }: any) => <a href={href}>{children}</a>,
@@ -8,9 +9,13 @@ vi.mock('next/navigation', () => ({
   useRouter: () => ({ push: () => {}, replace: () => {}, back: () => {} }),
   usePathname: () => '/',
 }));
+
+vi.mock("@/components/ui/theme-switcher", () => ({
+  ThemeSwitcher: () => null,
+}));
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-import Dashboard from "@/pages/Dashboard";
+import Dashboard from "@/app/dashboard/page";
 
 // Mock auth and supabase
 vi.mock("@/context/AuthContext", () => ({
@@ -19,6 +24,10 @@ vi.mock("@/context/AuthContext", () => ({
     loading: false,
     signOut: vi.fn(),
   }),
+}));
+
+vi.mock("@/hooks/useIsAdmin", () => ({
+  useIsAdmin: () => ({ isAdmin: false, loading: false }),
 }));
 
 const mockOrders = [

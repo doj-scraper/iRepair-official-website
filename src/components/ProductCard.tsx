@@ -9,6 +9,7 @@ export const ProductCard = ({ product }: { product: CatalogProduct }) => {
   const { addItem, setOpen } = useCart();
   /* history state handled in Catalog via window.history.replaceState */
   const lowStock = product.stock_level > 0 && product.stock_level <= 20;
+  const hasPrice = typeof product.wholesale_price === "number" && product.wholesale_price > 0;
 
   const handleAdd = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -17,7 +18,7 @@ export const ProductCard = ({ product }: { product: CatalogProduct }) => {
       {
         skuId: product.sku_id,
         name: product.part_name ?? product.sku_id,
-        price: product.wholesale_price ?? 0,
+        price: product.wholesale_price!,
         image: product.image_url,
       },
       product.moq
@@ -66,7 +67,7 @@ export const ProductCard = ({ product }: { product: CatalogProduct }) => {
         <div className="mt-auto pt-4 flex items-end justify-between gap-2">
           <div>
             <p className="font-display text-xl font-bold leading-none text-foreground">
-              {product.wholesale_price === 0
+              {!hasPrice
                 ? "On request"
                 : formatPrice(product.wholesale_price)}
             </p>
@@ -74,10 +75,10 @@ export const ProductCard = ({ product }: { product: CatalogProduct }) => {
           </div>
           <Button
             onClick={handleAdd}
-            disabled={product.stock_level === 0 || product.wholesale_price === 0}
+            disabled={product.stock_level === 0 || !hasPrice}
             size="sm"
             className="shrink-0 rounded border-2"
-            aria-label={`Add ${product.part_name} to cart`}
+            aria-label={`Add ${product.part_name ?? product.sku_id} to cart`}
           >
             <Plus className="h-3.5 w-3.5" />
             Add

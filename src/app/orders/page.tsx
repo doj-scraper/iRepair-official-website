@@ -36,7 +36,7 @@ const statusVariant: Record<OrderRow['status'], string> = {
 };
 
 function OrdersPageInner() {
-  const { user, loading: authLoading } = useAuth();
+  const { user, session, loading: authLoading } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -77,12 +77,15 @@ function OrdersPageInner() {
   // Verify payment on return from Stripe
   useEffect(() => {
     const sid = searchParams.get('session_id');
-    if (!sid || !user) return;
+    if (!sid || !user || !session?.access_token) return;
     (async () => {
       try {
         const response = await fetch('/api/verify-payment', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${session.access_token}`,
+          },
           body: JSON.stringify({ sessionId: sid }),
         });
         const result = await response.json();
@@ -104,7 +107,7 @@ function OrdersPageInner() {
       load();
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
+  }, [user, session?.access_token]);
 
   // Show spinner while auth resolves or user is not yet available
   if (authLoading || (!user && !authLoading)) {

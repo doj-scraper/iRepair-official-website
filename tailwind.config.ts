@@ -83,8 +83,8 @@ export default {
         },
       },
       fontFamily: {
-        display: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
-        sans: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+        display: ['Arial', 'Helvetica', 'sans-serif'],
+        sans: ['Tahoma', 'Verdana', 'Arial', 'sans-serif'],
       },
       borderRadius: {
         lg: "var(--radius)",

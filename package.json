@@ -6,8 +6,8 @@
   "scripts": {
     "dev": "next dev -p 3000",
     "dev:next": "next dev -p 3000",
-    "build": "next build",
-    "build:next": "next build",
+    "build": "npm run prisma:generate && next build",
+    "build:next": "npm run prisma:generate && next build",
     "start": "next start -p 3000",
     "start:next": "next start -p 3000",
     "lint": "eslint .",

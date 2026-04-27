@@ -22,8 +22,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: false, error: 'No items provided' }, { status: 400 });
     }
 
+    const authorization = req.headers.get('authorization') ?? '';
     const { data, error } = await supabaseAdmin.functions.invoke('create-checkout', {
       body: { items, userId: user.id },
+      headers: authorization ? { Authorization: authorization } : undefined,
     });
 
     if (error) {

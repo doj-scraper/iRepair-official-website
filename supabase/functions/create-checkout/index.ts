@@ -10,10 +10,15 @@ const corsHeaders = {
 
 type CartItem = {
   skuId: string;
-  name: string;
-  price: number; // cents
   quantity: number;
-  image?: string | null;
+};
+
+type InventoryRow = {
+  sku_id: string;
+  part_name: string | null;
+  wholesale_price: number | null;
+  stock_level: number;
+  moq: number;
 };
 
 serve(async (req) => {
@@ -38,6 +43,41 @@ serve(async (req) => {
     if (!Array.isArray(items) || items.length === 0) {
       throw new Error("Cart is empty");
     }
+    if (items.some((item) => !item.skuId || !Number.isInteger(item.quantity) || item.quantity <= 0)) {
+      throw new Error("Invalid cart items");
+    }
+
+    const uniqueSkuIds = [...new Set(items.map((item) => item.skuId))];
+    const supabaseAdmin = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+    );
+
+    const { data: inventoryRows, error: inventoryErr } = await supabaseAdmin
+      .from("inventory")
+      .select("sku_id, part_name, wholesale_price, stock_level, moq")
+      .in("sku_id", uniqueSkuIds);
+    if (inventoryErr) throw inventoryErr;
+    if (!inventoryRows || inventoryRows.length !== uniqueSkuIds.length) {
+      const found = new Set((inventoryRows ?? []).map((row) => row.sku_id));
+      const missing = uniqueSkuIds.filter((skuId) => !found.has(skuId));
+      throw new Error(`Unknown SKU(s): ${missing.join(", ")}`);
+    }
+
+    const inventoryBySku = new Map(
+      (inventoryRows as InventoryRow[]).map((row) => [row.sku_id, row])
+    );
+    for (const item of items) {
+      const inventoryRow = inventoryBySku.get(item.skuId);
+      if (!inventoryRow) throw new Error(`Unknown SKU: ${item.skuId}`);
+      if (inventoryRow.wholesale_price == null) throw new Error(`Missing price for ${item.skuId}`);
+      if (item.quantity < inventoryRow.moq) {
+        throw new Error(`Minimum order quantity not met for ${item.skuId}`);
+      }
+      if (item.quantity > inventoryRow.stock_level) {
+        throw new Error(`Insufficient stock for ${item.skuId}`);
+      }
+    }
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") ?? "", {
       apiVersion: "2025-08-27.basil",
@@ -47,13 +87,16 @@ serve(async (req) => {
     const customers = await stripe.customers.list({ email: user.email, limit: 1 });
     const customerId = customers.data[0]?.id;
 
-    const total = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
+    const pricedItems = items.map((item) => {
+      const inventoryRow = inventoryBySku.get(item.skuId)!;
+      return {
+        ...item,
+        name: inventoryRow.part_name ?? inventoryRow.sku_id,
+        price: inventoryRow.wholesale_price!,
+      };
+    });
 
-    // Service-role client to insert order regardless of RLS
-    const supabaseAdmin = createClient(
-      Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
-    );
+    const total = pricedItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
     const { data: order, error: orderErr } = await supabaseAdmin
       .from("orders")
@@ -63,7 +106,7 @@ serve(async (req) => {
     if (orderErr) throw orderErr;
 
     const { error: itemsErr } = await supabaseAdmin.from("order_items").insert(
-      items.map((i) => ({
+      pricedItems.map((i) => ({
         order_id: order.id,
         sku_id: i.skuId,
         quantity: i.quantity,
@@ -76,7 +119,7 @@ serve(async (req) => {
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       customer_email: customerId ? undefined : user.email,
-      line_items: items.map((i) => ({
+      line_items: pricedItems.map((i) => ({
         price_data: {
           currency: "usd",
           product_data: { name: i.name, metadata: { sku: i.skuId } },

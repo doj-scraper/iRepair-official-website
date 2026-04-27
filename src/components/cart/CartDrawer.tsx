@@ -12,7 +12,7 @@ import { getErrorMessage } from "@/lib/error";
 
 export const CartDrawer = () => {
   const { isOpen, setOpen, items, setQuantity, removeItem, clear } = useCart();
-  const { user } = useAuth();
+  const { user, session } = useAuth();
   const [submitting, setSubmitting] = useState(false);
   const subtotal = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
   const totalUnits = items.reduce((sum, i) => sum + i.quantity, 0);
@@ -22,19 +22,23 @@ export const CartDrawer = () => {
       toast.error("Please sign in to place an order");
       return;
     }
+    if (!session?.access_token) {
+      toast.error("Your session is still loading. Please try again in a moment.");
+      return;
+    }
     if (items.length === 0) return;
     setSubmitting(true);
     try {
       const response = await fetch('/api/create-checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        ...(session?.access_token
+          ? { Authorization: `Bearer ${session.access_token}` }
+          : {}),
         body: JSON.stringify({
           items: items.map((i) => ({
             skuId: i.skuId,
-            name: i.name,
-            price: i.price,
             quantity: i.quantity,
-            image: i.image,
           })),
         }),
       });

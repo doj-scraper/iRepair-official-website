@@ -117,7 +117,7 @@ export default function ProductDetailPage() {
   const goBack = () => router.push('/catalog');
 
   const handleAdd = () => {
-    if (!product || product.wholesale_price == null) return;
+    if (!product || !hasPrice) return;
     addItem(
       {
         skuId: product.sku_id,
@@ -165,6 +165,7 @@ export default function ProductDetailPage() {
 
   const quality = product.quality_grade ? QUALITY_INFO[product.quality_grade] : null;
   const inStock = product.stock_level > 0;
+  const hasPrice = typeof product.wholesale_price === 'number' && product.wholesale_price > 0;
 
   return (
     <MainLayout>
@@ -225,7 +226,7 @@ export default function ProductDetailPage() {
                 Wholesale price
               </p>
               <p className="font-display text-4xl font-bold">
-                {product.wholesale_price === 0
+                {!hasPrice
                   ? 'Contact for price'
                   : formatPrice(product.wholesale_price)}
               </p>
@@ -250,14 +251,14 @@ export default function ProductDetailPage() {
                 </div>
                 <Button
                   onClick={handleAdd}
-                  disabled={!inStock || product.wholesale_price === 0 || product.wholesale_price == null}
+                  disabled={!inStock || !hasPrice}
                   className="flex-1"
                 >
                   <ShoppingCart className="mr-2 h-4 w-4" />
                   Add to cart
                 </Button>
               </div>
-              {product.wholesale_price === 0 && (
+              {!hasPrice && (
                 <p className="mt-3 text-sm text-muted-foreground">
                   This item is priced on request. Please contact us for a custom quote.
                 </p>

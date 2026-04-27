@@ -1,7 +1,7 @@
 'use client';
 
 import { Suspense, useEffect, useMemo, useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { CatalogSidebar, type CatalogFilter } from '@/components/CatalogSidebar';
 import { ProductCard } from '@/components/ProductCard';
@@ -14,6 +14,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 function CatalogPageInner() {
   const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
 
   const [filter, setFilter] = useState<CatalogFilter>({});
@@ -33,6 +34,10 @@ function CatalogPageInner() {
   // Initialize query from the URL search param `q`
   const [query, setQuery] = useState(() => searchParams.get('q') ?? '');
 
+  useEffect(() => {
+    setQuery(searchParams.get('q') ?? '');
+  }, [searchParams]);
+
   const [mobileFilters, setMobileFilters] = useState(false);
 
   // Keep history.state in sync so back-nav from product detail restores filters
@@ -46,6 +51,22 @@ function CatalogPageInner() {
   const { data: products = [], isLoading, error } = useCatalog();
   const tree = useMemo(() => buildCatalogTree(products), [products]);
   const showLoading = hydrated && isLoading && products.length > 0;
+
+  const updateQuery = (nextQuery: string) => {
+    setQuery(nextQuery);
+
+    if (typeof window === 'undefined') return;
+
+    const params = new URLSearchParams(searchParams.toString());
+    if (nextQuery.trim()) {
+      params.set('q', nextQuery);
+    } else {
+      params.delete('q');
+    }
+
+    const nextUrl = params.size > 0 ? `${pathname}?${params.toString()}` : pathname;
+    router.replace(nextUrl, { scroll: false });
+  };
 
   const filtered = useMemo(() => {
     return products.filter((p) => {
@@ -86,7 +107,7 @@ function CatalogPageInner() {
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 value={query}
-                onChange={(e) => setQuery(e.target.value)}
+                onChange={(e) => updateQuery(e.target.value)}
                 aria-label="Search catalog by SKU or name"
                 placeholder="Search SKU or name…"
                 className="pl-9"
