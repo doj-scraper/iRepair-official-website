@@ -79,13 +79,12 @@ iRepair Connect is a wholesale phone-parts storefront. The live application is a
 
 ## Environment variables
 
-- `NEXT_PUBLIC_SUPABASE_URL`
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-- `SUPABASE_URL`
-- `SUPABASE_PUBLISHABLE_KEY`
-- `SUPABASE_SERVICE_ROLE_KEY`
-- `DATABASE_URL`
-- `STRIPE_SECRET_KEY`
+- `NEXT_PUBLIC_SUPABASE_URL` - Browser-accessible Supabase project URL
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY` - Browser-accessible Supabase anonymous/publishable key
+- `SUPABASE_URL` - Server-side Supabase project URL
+- `SUPABASE_SERVICE_ROLE_KEY` - Server-only Supabase service role key (never expose to browser)
+- `DATABASE_URL` - Prisma database connection string
+- `STRIPE_SECRET_KEY` - Stripe secret key for payment processing
 
 ## Scripts worth knowing
 

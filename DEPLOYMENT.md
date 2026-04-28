@@ -16,8 +16,10 @@ Build & deploy (quick)
 1. Install deps: npm ci
 2. Build: npm run build
 3. Deploy: connect this repository to Vercel (recommended) or use any static hosting; set environment variables in the platform:
-   - VITE_SUPABASE_URL
-   - VITE_SUPABASE_PUBLISHABLE_KEY
+   - NEXT_PUBLIC_SUPABASE_URL (e.g., https://your-project.supabase.co)
+   - NEXT_PUBLIC_SUPABASE_ANON_KEY (Supabase anonymous/publishable key)
+   - SUPABASE_URL (server-side, same as NEXT_PUBLIC_SUPABASE_URL)
+   - SUPABASE_SERVICE_ROLE_KEY (server-only, never expose to browser)
    - DATABASE_URL (if migrations/Prisma are run)
    - Optional: NEON_API_KEY (for provisioning Neon DB)
 
